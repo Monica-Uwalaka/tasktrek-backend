@@ -14,11 +14,15 @@ access_token_expire_minutes = float(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 def authenticate_user(username:str, password:str) -> bool | User:
   result  = get_by_username(username)
+  
+  #raise exception if username not present 
+  if not result:
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+                        detail=f'*Incorrect sign in credentials')
   user = result[0]
-  if not user:
-    return False
   if not verify_password(password, user.password):
-    return False
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+                        detail=f'*Incorrect sign in credentials')
     
   return user 
 

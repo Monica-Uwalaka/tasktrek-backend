@@ -18,11 +18,11 @@ def authenticate_user(username:str, password:str) -> bool | User:
   #raise exception if username not present 
   if not result:
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                        detail=f'*Incorrect sign in credentials')
+                        detail=f'Incorrect sign in credentials')
   user = result[0]
   if not verify_password(password, user.password):
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                        detail=f'*Incorrect sign in credentials')
+                        detail=f'Incorrect sign in credentials')
     
   return user 
 

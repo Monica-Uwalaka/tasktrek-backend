@@ -4,6 +4,7 @@ from ..services.jwt_service  import create_access_token
 from ..schemas.user_schema import UserSchema
 from fastapi import HTTPException, status
 from ..utils.bcrypt_hashing import get_hashed_password, verify_password
+from ..utils.formatting import format_string
 from ..models.models import User
 from datetime import  timedelta
 import os
@@ -14,7 +15,7 @@ access_token_expire_minutes = float(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
 def authenticate_user(username:str, password:str) -> bool | User:
-  result  = get_by_username(username)
+  result = get_by_username(username)
   
   #raise exception if username not present 
   if not result:
@@ -32,6 +33,11 @@ def register(user: UserCreate) -> UserSchema:
   """
   returns newly created user
   """
+  #format data
+  for key, value in user.__dict__.items():
+    if key != "password":
+      setattr(user, key, format_string(value))
+
   #validate email pattern
   try:
     
@@ -58,8 +64,10 @@ def login(username: str, password: str):
   """
   returns login data 
   """
+  username = format_string(username)
   #authenticate user 
   user = authenticate_user(username, password)
+  #format data
 
   if not user:
      raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 

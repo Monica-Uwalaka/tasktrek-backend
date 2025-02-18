@@ -1,5 +1,5 @@
-def format_string(email: str) -> str:
-    return email.strip() \
+def format_string(string: str) -> str:
+    return string.strip() \
                 .replace(" ", "") \
                 .replace("\n","") \
                 .replace("\r","") \

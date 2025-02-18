@@ -1,5 +1,5 @@
 from fastapi import Depends, APIRouter, Response
-from ..schemas.user_schema import UserCreate, UserLoginSchema
+from ..schemas.user_schema import UserCreate
 from ..controllers import auth_controller
 from typing import Annotated, Union
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -13,8 +13,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter(prefix="/auth")
 
 @router.post("/register")
-async def register(user: UserCreate):
-    registered_user = auth_controller.register(user)
+async def register(signupdata: UserCreate):
+    registered_user = auth_controller.register(signupdata)
     return(registered_user)
 
 @router.post("/token")

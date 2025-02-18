@@ -15,6 +15,7 @@ class UserBase(BaseModel):
     username:  str
 
 class UserCreate(UserBase):
+    email: str
     password: str
 
 class UserLoginSchema(BaseModel):

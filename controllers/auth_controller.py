@@ -5,8 +5,9 @@ from ..schemas.user_schema import UserSchema
 from fastapi import HTTPException, status
 from ..utils.bcrypt_hashing import get_hashed_password, verify_password
 from ..models.models import User
-from datetime import datetime, timedelta, timezone
+from datetime import  timedelta
 import os
+from email_validator import validate_email, EmailNotValidError
 
 access_token_expire_minutes = float(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
@@ -31,6 +32,14 @@ def register(user: UserCreate) -> UserSchema:
   """
   returns newly created user
   """
+  #validate email pattern
+  try:
+    
+    emailinfo = validate_email(user.email, check_deliverability=False)
+
+  except EmailNotValidError as e:
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Please nter a valid email address")
+
   user_exists_by_email = get_by_email(user.email)
   user_exists_by_username = get_by_username(user.username)
 
@@ -38,10 +47,10 @@ def register(user: UserCreate) -> UserSchema:
   user.password = get_hashed_password(user.password)
 
   if user_exists_by_email:
-    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="a user with this email already exists")
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="A user with this email already exists")
 
   if user_exists_by_username:
-    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="a user with this username already exists")
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="aAuser with this username already exists")
 
   return create(user)
 
